@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/Aspire/">
+    <Project Path="TaskManagement.AppHost/TaskManagement.AppHost.csproj" Id="2fb3f6e9-8328-4abd-88de-680c2bed0dba" />
+    <Project Path="TaskManagement.ServiceDefaults/TaskManagement.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Project Path="BallastLane.TaskManager.API/BallastLane.TaskManager.API.csproj" />
+  <Project Path="BallastLane.TaskManager.Application/BallastLane.TaskManager.Application.csproj" Id="e09f3b23-e5ce-4f8e-ba91-4174cffc2e98" />
+  <Project Path="BallastLane.TaskManager.Domain/BallastLane.TaskManager.Domain.csproj" Id="60c754b3-8af7-4475-8516-d586cf68cd71" />
+  <Project Path="BallastLane.TaskManager.Infrastructure/BallastLane.TaskManager.Infrastructure.csproj" Id="795fdc75-46a3-4598-bf05-3d94bdfa6168" />
+</Solution>
