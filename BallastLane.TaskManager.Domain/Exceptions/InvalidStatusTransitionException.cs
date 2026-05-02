@@ -1,14 +1,14 @@
-namespace BallastLane.TaskManager.Domain.Exceptions;
+namespace BallastLane.TaskManager.Exceptions;
 
-public sealed class InvalidStatusTransitionException : Exception
+/// <summary>
+/// Thrown when a task is asked to move between two statuses that the domain state machine does not allow.
+/// </summary>
+/// <param name="from">Current status of the task at the time of the attempted transition.</param>
+/// <param name="to">Status the caller attempted to transition the task into.</param>
+public sealed class InvalidStatusTransitionException(Tasks.TaskStatus from, Tasks.TaskStatus to) : Exception($"Cannot transition task from {from} to {to}.")
 {
-    public InvalidStatusTransitionException(Tasks.TaskStatus from, Tasks.TaskStatus to)
-        : base($"Cannot transition task from {from} to {to}.")
-    {
-        From = from;
-        To = to;
-    }
-
-    public Tasks.TaskStatus From { get; }
-    public Tasks.TaskStatus To { get; }
+    /// <summary>Status the task was in when the invalid transition was requested.</summary>
+    public Tasks.TaskStatus From { get; } = from;
+    /// <summary>Status the caller attempted to transition the task into.</summary>
+    public Tasks.TaskStatus To { get; } = to;
 }

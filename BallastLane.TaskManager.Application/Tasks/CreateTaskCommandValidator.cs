@@ -1,8 +1,11 @@
-using BallastLane.TaskManager.Domain.Tasks;
 using FluentValidation;
 
-namespace BallastLane.TaskManager.Application.Tasks;
+namespace BallastLane.TaskManager.Tasks;
 
+/// <summary>
+/// FluentValidation rules for <see cref="CreateTaskCommand"/>: enforces required title, length limits,
+/// and a future due date. The injected <see cref="TimeProvider"/> defines "now" for the due-date check.
+/// </summary>
 public sealed class CreateTaskCommandValidator : AbstractValidator<CreateTaskCommand>
 {
     public CreateTaskCommandValidator(TimeProvider timeProvider)

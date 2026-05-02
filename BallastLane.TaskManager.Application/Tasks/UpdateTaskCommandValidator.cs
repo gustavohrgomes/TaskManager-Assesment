@@ -1,8 +1,11 @@
-using BallastLane.TaskManager.Domain.Tasks;
 using FluentValidation;
 
-namespace BallastLane.TaskManager.Application.Tasks;
+namespace BallastLane.TaskManager.Tasks;
 
+/// <summary>
+/// FluentValidation rules for <see cref="UpdateTaskCommand"/>: enforces required identifiers, title
+/// length limits, a future due date when supplied, and a known status enum value.
+/// </summary>
 public sealed class UpdateTaskCommandValidator : AbstractValidator<UpdateTaskCommand>
 {
     public UpdateTaskCommandValidator(TimeProvider timeProvider)

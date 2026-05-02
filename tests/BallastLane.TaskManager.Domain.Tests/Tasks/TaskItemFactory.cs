@@ -1,4 +1,4 @@
-using BallastLane.TaskManager.Domain.Tasks;
+using BallastLane.TaskManager.Tasks;
 
 namespace BallastLane.TaskManager.Domain.Tests.Tasks;
 

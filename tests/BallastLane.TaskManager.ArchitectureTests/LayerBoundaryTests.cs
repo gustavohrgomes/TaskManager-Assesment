@@ -1,3 +1,4 @@
+using BallastLane.TaskManager.Tasks;
 using NetArchTest.Rules;
 
 namespace BallastLane.TaskManager.ArchitectureTests;
@@ -7,7 +8,7 @@ public class LayerBoundaryTests
     [Fact]
     public void Domain_should_have_no_external_dependencies()
     {
-        var domain = typeof(BallastLane.TaskManager.Domain.Tasks.TaskItem).Assembly;
+        var domain = typeof(TaskItem).Assembly;
 
         var result = Types.InAssembly(domain)
             .ShouldNot()
@@ -28,7 +29,7 @@ public class LayerBoundaryTests
     [Fact]
     public void Application_should_not_reference_Npgsql()
     {
-        var application = typeof(BallastLane.TaskManager.Application.Tasks.CreateTaskHandler).Assembly;
+        var application = typeof(CreateTaskHandler).Assembly;
 
         var result = Types.InAssembly(application)
             .ShouldNot()
@@ -60,9 +61,9 @@ public class LayerBoundaryTests
     {
         var assemblies = new[]
         {
-            typeof(BallastLane.TaskManager.Domain.Tasks.TaskItem).Assembly,
-            typeof(BallastLane.TaskManager.Application.Tasks.CreateTaskHandler).Assembly,
-            typeof(BallastLane.TaskManager.Infrastructure.Marker).Assembly,
+            typeof(TaskItem).Assembly,
+            typeof(CreateTaskHandler).Assembly,
+            typeof(AssemblyMarker).Assembly,
             typeof(BallastLane.TaskManager.API.WeatherForecast).Assembly,
         };
 

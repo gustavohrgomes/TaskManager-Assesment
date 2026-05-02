@@ -1,1 +1,1 @@
-global using TaskStatus = BallastLane.TaskManager.Domain.Tasks.TaskStatus;
+global using TaskStatus = BallastLane.TaskManager.Tasks.TaskStatus;

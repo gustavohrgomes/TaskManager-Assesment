@@ -1,10 +1,13 @@
-using BallastLane.TaskManager.Application.Abstractions;
-using BallastLane.TaskManager.Domain.Exceptions;
-using BallastLane.TaskManager.Domain.Tasks;
+using BallastLane.TaskManager.Abstractions;
+using BallastLane.TaskManager.Exceptions;
 using FluentValidation;
 
-namespace BallastLane.TaskManager.Application.Tasks;
+namespace BallastLane.TaskManager.Tasks;
 
+/// <summary>
+/// Application-layer handler that validates a <see cref="CreateTaskCommand"/>, builds the domain aggregate,
+/// and persists it inside a single unit-of-work transaction owned by the current user.
+/// </summary>
 public sealed class CreateTaskHandler
 {
     private readonly IValidator<CreateTaskCommand> _validator;
@@ -27,6 +30,12 @@ public sealed class CreateTaskHandler
         _timeProvider = timeProvider;
     }
 
+    /// <summary>
+    /// Creates a new task owned by the authenticated user.
+    /// </summary>
+    /// <param name="command">Caller-supplied task fields.</param>
+    /// <param name="ct">Token used to cancel the operation.</param>
+    /// <returns>A read-side projection of the newly persisted task.</returns>
     public async Task<TaskResult> Handle(CreateTaskCommand command, CancellationToken ct)
     {
         var validation = _validator.Validate(command);

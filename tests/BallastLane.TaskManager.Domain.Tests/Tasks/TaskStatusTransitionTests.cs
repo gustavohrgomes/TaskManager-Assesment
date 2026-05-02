@@ -1,5 +1,4 @@
-using BallastLane.TaskManager.Domain.Exceptions;
-using BallastLane.TaskManager.Domain.Tasks;
+using BallastLane.TaskManager.Exceptions;
 
 namespace BallastLane.TaskManager.Domain.Tests.Tasks;
 

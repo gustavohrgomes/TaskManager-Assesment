@@ -1,6 +1,5 @@
-using BallastLane.TaskManager.Application.Abstractions;
-using BallastLane.TaskManager.Application.Tasks;
-using BallastLane.TaskManager.Domain.Tasks;
+using BallastLane.TaskManager.Abstractions;
+using BallastLane.TaskManager.Tasks;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Time.Testing;
