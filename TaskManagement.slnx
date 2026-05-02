@@ -8,6 +8,11 @@
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/BallastLane.TaskManager.Domain.Tests/BallastLane.TaskManager.Domain.Tests.csproj" />
+    <Project Path="tests/BallastLane.TaskManager.Application.Tests/BallastLane.TaskManager.Application.Tests.csproj" />
+    <Project Path="tests/BallastLane.TaskManager.ArchitectureTests/BallastLane.TaskManager.ArchitectureTests.csproj" />
+  </Folder>
   <Project Path="BallastLane.TaskManager.API/BallastLane.TaskManager.API.csproj" />
   <Project Path="BallastLane.TaskManager.Application/BallastLane.TaskManager.Application.csproj" Id="e09f3b23-e5ce-4f8e-ba91-4174cffc2e98" />
   <Project Path="BallastLane.TaskManager.Domain/BallastLane.TaskManager.Domain.csproj" Id="60c754b3-8af7-4475-8516-d586cf68cd71" />

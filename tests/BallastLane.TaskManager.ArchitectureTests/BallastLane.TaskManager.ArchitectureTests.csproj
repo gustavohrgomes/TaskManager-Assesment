@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>BallastLane.TaskManager.ArchitectureTests</RootNamespace>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="NetArchTest.Rules" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\BallastLane.TaskManager.Domain\BallastLane.TaskManager.Domain.csproj" />
+    <ProjectReference Include="..\..\BallastLane.TaskManager.Application\BallastLane.TaskManager.Application.csproj" />
+    <ProjectReference Include="..\..\BallastLane.TaskManager.Infrastructure\BallastLane.TaskManager.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\BallastLane.TaskManager.API\BallastLane.TaskManager.API.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+    <Using Include="Shouldly" />
+  </ItemGroup>
+
+</Project>
