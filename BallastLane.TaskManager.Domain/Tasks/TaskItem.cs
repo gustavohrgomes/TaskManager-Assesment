@@ -28,7 +28,7 @@ public sealed class TaskItem
     /// <summary>UTC timestamp of the most recent mutation to the task.</summary>
     public DateTimeOffset UpdatedAt { get; private set; }
 
-    private TaskItem(
+    public TaskItem(
         Guid taskItemId,
         Guid ownerId,
         string title,

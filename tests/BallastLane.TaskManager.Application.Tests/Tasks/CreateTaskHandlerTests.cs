@@ -19,22 +19,11 @@ public class CreateTaskHandlerTests
         validator.Validate(Arg.Any<CreateTaskCommand>()).Returns(new ValidationResult());
 
         var tasks = Substitute.For<ITaskRepository>();
-        var unitOfWork = Substitute.For<IUnitOfWork>();
-        unitOfWork
-            .ExecuteInTransactionAsync(
-                Arg.Any<Func<CancellationToken, Task<TaskResult>>>(),
-                Arg.Any<CancellationToken>())
-            .Returns(callInfo =>
-            {
-                var work = callInfo.Arg<Func<CancellationToken, Task<TaskResult>>>();
-                return work(callInfo.Arg<CancellationToken>());
-            });
-
         var ownerId = Guid.NewGuid();
         var userContext = Substitute.For<IUserContext>();
         userContext.UserId.Returns(ownerId);
 
-        var handler = new CreateTaskHandler(validator, tasks, unitOfWork, userContext, time);
+        var handler = new CreateTaskHandler(validator, tasks, userContext, time);
 
         var command = new CreateTaskCommand(
             Title: "Buy milk",
@@ -47,6 +36,8 @@ public class CreateTaskHandlerTests
         result.OwnerId.ShouldBe(ownerId);
         result.Status.ShouldBe(TaskStatus.Pending);
         result.CreatedAt.ShouldBe(fixedNow);
-        await tasks.Received(1).AddAsync(Arg.Any<TaskItem>(), Arg.Any<CancellationToken>());
+        await tasks.Received(1).AddAsync(
+            Arg.Is<TaskItem>(t => t.Title == "Buy milk" && t.OwnerId == ownerId),
+            Arg.Any<CancellationToken>());
     }
 }

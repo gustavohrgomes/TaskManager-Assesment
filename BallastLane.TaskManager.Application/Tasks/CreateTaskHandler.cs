@@ -6,26 +6,23 @@ namespace BallastLane.TaskManager.Tasks;
 
 /// <summary>
 /// Application-layer handler that validates a <see cref="CreateTaskCommand"/>, builds the domain aggregate,
-/// and persists it inside a single unit-of-work transaction owned by the current user.
+/// and persists it via the task repository on behalf of the current user.
 /// </summary>
 public sealed class CreateTaskHandler
 {
     private readonly IValidator<CreateTaskCommand> _validator;
     private readonly ITaskRepository _tasks;
-    private readonly IUnitOfWork _unitOfWork;
     private readonly IUserContext _userContext;
     private readonly TimeProvider _timeProvider;
 
     public CreateTaskHandler(
         IValidator<CreateTaskCommand> validator,
         ITaskRepository tasks,
-        IUnitOfWork unitOfWork,
         IUserContext userContext,
         TimeProvider timeProvider)
     {
         _validator = validator;
         _tasks = tasks;
-        _unitOfWork = unitOfWork;
         _userContext = userContext;
         _timeProvider = timeProvider;
     }
@@ -47,17 +44,14 @@ public sealed class CreateTaskHandler
             throw new DomainValidationException(errors);
         }
 
-        return await _unitOfWork.ExecuteInTransactionAsync(async innerCt =>
-        {
-            var task = TaskItem.Create(
-                ownerId: _userContext.UserId,
-                title: command.Title,
-                description: command.Description,
-                dueDate: command.DueDate,
-                now: _timeProvider.GetUtcNow());
+        var task = TaskItem.Create(
+            ownerId: _userContext.UserId,
+            title: command.Title,
+            description: command.Description,
+            dueDate: command.DueDate,
+            now: _timeProvider.GetUtcNow());
 
-            await _tasks.AddAsync(task, innerCt);
-            return TaskResult.From(task);
-        }, ct);
+        await _tasks.AddAsync(task, ct);
+        return TaskResult.From(task);
     }
 }

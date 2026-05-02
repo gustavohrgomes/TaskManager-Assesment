@@ -12,6 +12,7 @@
     <Project Path="tests/BallastLane.TaskManager.Domain.Tests/BallastLane.TaskManager.Domain.Tests.csproj" />
     <Project Path="tests/BallastLane.TaskManager.Application.Tests/BallastLane.TaskManager.Application.Tests.csproj" />
     <Project Path="tests/BallastLane.TaskManager.ArchitectureTests/BallastLane.TaskManager.ArchitectureTests.csproj" />
+    <Project Path="tests/BallastLane.TaskManager.Infrastructure.Tests/BallastLane.TaskManager.Infrastructure.Tests.csproj" />
   </Folder>
   <Project Path="BallastLane.TaskManager.API/BallastLane.TaskManager.API.csproj" />
   <Project Path="BallastLane.TaskManager.Application/BallastLane.TaskManager.Application.csproj" Id="e09f3b23-e5ce-4f8e-ba91-4174cffc2e98" />

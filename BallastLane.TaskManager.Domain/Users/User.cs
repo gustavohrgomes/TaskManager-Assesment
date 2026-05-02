@@ -17,7 +17,7 @@ public sealed class User
     /// <summary>UTC timestamp at which the user was first registered.</summary>
     public DateTimeOffset CreatedAt { get; } = DateTimeOffset.UtcNow;
 
-    private User(Guid id, EmailAddress email, string passwordHash, DateTimeOffset createdAt)
+    public User(Guid id, EmailAddress email, string passwordHash, DateTimeOffset createdAt)
     {
         Id = id;
         Email = email;

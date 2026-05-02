@@ -8,8 +8,13 @@ namespace BallastLane.TaskManager.Tasks;
 /// </summary>
 public sealed class ListTasksHandler
 {
+    private readonly ITaskRepository _tasks;
+    private readonly IUserContext _userContext;
+
     public ListTasksHandler(ITaskRepository tasks, IUserContext userContext)
     {
+        _tasks = tasks;
+        _userContext = userContext;
     }
 
     /// <summary>
@@ -18,6 +23,15 @@ public sealed class ListTasksHandler
     /// <param name="query">Filtering, paging, and sorting parameters.</param>
     /// <param name="ct">Token used to cancel the operation.</param>
     /// <returns>A page of task projections together with paging metadata.</returns>
-    public Task<PagedResult<TaskResult>> Handle(TaskListQuery query, CancellationToken ct) =>
-        throw new NotImplementedException("See Phase 3.");
+    public async Task<PagedResult<TaskResult>> Handle(TaskListQuery query, CancellationToken ct)
+    {
+        var scoped = query with { OwnerId = _userContext.UserId };
+        var result = await _tasks.ListAsync(scoped, ct);
+
+        return new PagedResult<TaskResult>(
+            result.Items.Select(TaskResult.From).ToList(),
+            result.TotalCount,
+            result.Page,
+            result.PageSize);
+    }
 }

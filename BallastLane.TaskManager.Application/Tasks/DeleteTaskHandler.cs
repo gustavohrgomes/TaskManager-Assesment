@@ -4,15 +4,17 @@ namespace BallastLane.TaskManager.Tasks;
 
 /// <summary>
 /// Application-layer handler that deletes a task on behalf of the current user, enforcing ownership
-/// before the delete is committed.
+/// via the repository's WHERE clause.
 /// </summary>
 public sealed class DeleteTaskHandler
 {
-    public DeleteTaskHandler(
-        ITaskRepository tasks,
-        IUnitOfWork unitOfWork,
-        IUserContext userContext)
+    private readonly ITaskRepository _tasks;
+    private readonly IUserContext _userContext;
+
+    public DeleteTaskHandler(ITaskRepository tasks, IUserContext userContext)
     {
+        _tasks = tasks;
+        _userContext = userContext;
     }
 
     /// <summary>
@@ -20,6 +22,8 @@ public sealed class DeleteTaskHandler
     /// </summary>
     /// <param name="command">Identifier of the task to delete.</param>
     /// <param name="ct">Token used to cancel the operation.</param>
-    public Task Handle(DeleteTaskCommand command, CancellationToken ct) =>
-        throw new NotImplementedException("See Phase 3.");
+    public async Task Handle(DeleteTaskCommand command, CancellationToken ct)
+    {
+        await _tasks.DeleteAsync(command.TaskId, _userContext.UserId, ct);
+    }
 }
