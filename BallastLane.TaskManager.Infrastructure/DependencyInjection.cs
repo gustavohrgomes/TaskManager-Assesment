@@ -1,6 +1,5 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Npgsql;
+using Microsoft.Extensions.Hosting;
 using BallastLane.TaskManager.Abstractions;
 using BallastLane.TaskManager.Auth;
 using BallastLane.TaskManager.Persistence;
@@ -9,23 +8,19 @@ namespace BallastLane.TaskManager;
 
 public static class InfrastructureDependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(
-        this IServiceCollection services,
-        IConfiguration configuration)
+    public static IHostApplicationBuilder AddInfrastructure(this IHostApplicationBuilder builder)
     {
-        var connectionString = configuration.GetConnectionString("taskmanager");
-        var dataSource = NpgsqlDataSource.Create(connectionString!);
-        services.AddSingleton(dataSource);
+        builder.AddNpgsqlDataSource("taskmanager");
 
-        services.AddSingleton<IDbContext, NpgsqlDbContext>();
+        builder.Services.AddSingleton<IDbContext, NpgsqlDbContext>();
 
-        services.AddScoped<IUserRepository, NpgsqlUserRepository>();
-        services.AddScoped<ITaskRepository, NpgsqlTaskRepository>();
+        builder.Services.AddScoped<IUserRepository, NpgsqlUserRepository>();
+        builder.Services.AddScoped<ITaskRepository, NpgsqlTaskRepository>();
 
-        services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
-        services.AddSingleton<IPasswordHasher, Pbkdf2PasswordHasher>();
-        services.AddSingleton<IJwtTokenIssuer, JwtTokenIssuer>();
+        builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
+        builder.Services.AddSingleton<IPasswordHasher, Pbkdf2PasswordHasher>();
+        builder.Services.AddSingleton<IJwtTokenIssuer, JwtTokenIssuer>();
 
-        return services;
+        return builder;
     }
 }

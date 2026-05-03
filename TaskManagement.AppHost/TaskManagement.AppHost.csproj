@@ -1,4 +1,4 @@
-<Project Sdk="Aspire.AppHost.Sdk/13.1.0">
+<Project Sdk="Aspire.AppHost.Sdk/13.2.4">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -7,6 +7,11 @@
     <Nullable>enable</Nullable>
     <UserSecretsId>546844de-e5d7-4442-a225-3814ed000607</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.JavaScript" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BallastLane.TaskManager.API\BallastLane.TaskManager.API.csproj" />

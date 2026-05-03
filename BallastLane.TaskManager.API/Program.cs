@@ -17,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 
 builder.Services.AddApplication();
-builder.Services.AddInfrastructure(builder.Configuration);
+builder.AddInfrastructure();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserContext, ClaimsPrincipalUserContext>();
@@ -70,8 +70,7 @@ builder.Services.AddControllers()
             new System.Text.Json.Serialization.JsonStringEnumConverter(
                 System.Text.Json.JsonNamingPolicy.CamelCase)));
 
-builder.Services.AddOpenApi(options 
-    => options.AddDocumentTransformer((document, context, ct) =>
+builder.Services.AddOpenApi(options => options.AddDocumentTransformer((document, context, ct) =>
     {
         document.Info.Title = "BallastLane Task Manager API";
         document.Info.Version = "1.0.0";
