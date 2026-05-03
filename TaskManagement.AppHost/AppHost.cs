@@ -5,6 +5,7 @@ var jwtKey = builder.AddParameter("jwt-key", secret: true);
 var taskdb = builder.AddPostgres("postgres")
     .WithDataVolume()
     .WithPgAdmin()
+    .WithEnvironment("POSTGRES_DB", "taskmanager")
     .WithInitFiles("../db")
     .AddDatabase("taskmanager");
 
@@ -22,7 +23,7 @@ var api = builder.AddProject<Projects.BallastLane_TaskManager_API>("ballastlane-
 builder.AddJavaScriptApp("web", "../apps/web", "start")
     .WithReference(api)
     .WaitFor(api)
-    .WithHttpEndpoint(port: 4200, env: "PORT")
+    .WithHttpEndpoint(env: "PORT")
     .WithExternalHttpEndpoints();
 
 builder.Build().Run();
