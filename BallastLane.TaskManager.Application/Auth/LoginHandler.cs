@@ -55,9 +55,8 @@ public sealed class LoginHandler
             throw new UnauthorizedException();
         }
 
-        if (!_passwordHasher.Verify(user.PasswordHash, command.Password))
-            throw new UnauthorizedException();
-
-        return _tokenIssuer.Issue(user);
+        return !_passwordHasher.Verify(user.PasswordHash, command.Password) 
+            ? throw new UnauthorizedException() 
+            : _tokenIssuer.Issue(user);
     }
 }

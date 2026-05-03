@@ -43,7 +43,7 @@ public class LayerBoundaryTests
     [Fact]
     public void Controllers_should_not_depend_on_Npgsql()
     {
-        var api = typeof(BallastLane.TaskManager.API.WeatherForecast).Assembly;
+        var api = typeof(BallastLane.TaskManager.API.IApiMarker).Assembly;
 
         var result = Types.InAssembly(api)
             .That()
@@ -64,7 +64,7 @@ public class LayerBoundaryTests
             typeof(TaskItem).Assembly,
             typeof(CreateTaskHandler).Assembly,
             typeof(AssemblyMarker).Assembly,
-            typeof(BallastLane.TaskManager.API.WeatherForecast).Assembly,
+            typeof(BallastLane.TaskManager.API.IApiMarker).Assembly,
         };
 
         var disallowedAssemblyPrefixes = new[]
