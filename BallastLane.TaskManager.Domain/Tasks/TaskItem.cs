@@ -12,7 +12,7 @@ public sealed class TaskItem
     public const int MaxTitleLength = 200;
 
     /// <summary>Unique identifier assigned to the task at creation.</summary>
-    public Guid TaskItemId { get; }
+    public Guid TaskId { get; }
     /// <summary>Identifier of the user who owns this task. Immutable after creation.</summary>
     public Guid OwnerId { get; }
     /// <summary>Short human-readable title describing the task.</summary>
@@ -29,7 +29,7 @@ public sealed class TaskItem
     public DateTimeOffset UpdatedAt { get; private set; }
 
     public TaskItem(
-        Guid taskItemId,
+        Guid taskId,
         Guid ownerId,
         string title,
         string? description,
@@ -38,7 +38,7 @@ public sealed class TaskItem
         DateTimeOffset createdAt,
         DateTimeOffset updatedAt)
     {
-        TaskItemId = taskItemId;
+        TaskId = taskId;
         OwnerId = ownerId;
         Title = title;
         Description = description;
@@ -69,7 +69,7 @@ public sealed class TaskItem
         return title.Length > MaxTitleLength
             ? throw new DomainValidationException(nameof(Title), $"Title cannot exceed {MaxTitleLength} characters.")
             : new TaskItem(
-            taskItemId: Guid.NewGuid(),
+            taskId: Guid.NewGuid(),
             ownerId: ownerId,
             title: title,
             description: description,
@@ -111,7 +111,7 @@ public sealed class TaskItem
     public void AssertOwnedBy(Guid userId)
     {
         if (OwnerId != userId)
-            throw new TaskNotOwnedByUserException(TaskItemId, userId);
+            throw new TaskNotOwnedByUserException(TaskId, userId);
     }
 
     /// <summary>

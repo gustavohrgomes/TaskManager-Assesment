@@ -3,7 +3,7 @@ using BallastLane.TaskManager.Tasks;
 namespace BallastLane.TaskManager.API.Models;
 
 public sealed record TaskResponse(
-    Guid Id,
+    Guid TaskId,
     string Title,
     string? Description,
     string Status,
@@ -12,7 +12,7 @@ public sealed record TaskResponse(
     DateTimeOffset UpdatedAt)
 {
     public static TaskResponse From(TaskResult result) =>
-        new(result.TaskItemId, result.Title, result.Description,
+        new(result.TaskId, result.Title, result.Description,
             FormatStatus(result.Status),
             result.DueDate, result.CreatedAt, result.UpdatedAt);
 

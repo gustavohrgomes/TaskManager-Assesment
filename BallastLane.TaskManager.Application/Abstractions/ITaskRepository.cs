@@ -17,11 +17,11 @@ public interface ITaskRepository
     /// <summary>
     /// Looks up a task by its identifier, restricted to a specific owner so other users cannot retrieve it.
     /// </summary>
-    /// <param name="id">Identifier of the task to fetch.</param>
+    /// <param name="taskId">Identifier of the task to fetch.</param>
     /// <param name="ownerId">Identifier of the owner the task must belong to.</param>
     /// <param name="ct">Token used to cancel the operation.</param>
     /// <returns>The task if found and owned by <paramref name="ownerId"/>; otherwise <c>null</c>.</returns>
-    Task<TaskItem?> GetByIdAsync(Guid id, Guid ownerId, CancellationToken ct);
+    Task<TaskItem?> GetByIdAsync(Guid taskId, Guid ownerId, CancellationToken ct);
 
     /// <summary>
     /// Returns a paged slice of tasks matching the supplied query (owner, status, due-before, sort, paging).
@@ -39,8 +39,8 @@ public interface ITaskRepository
     /// <summary>
     /// Deletes a task identified by id, scoped by owner so cross-user deletes silently no-op rather than succeed.
     /// </summary>
-    /// <param name="id">Identifier of the task to delete.</param>
+    /// <param name="taskId">Identifier of the task to delete.</param>
     /// <param name="ownerId">Identifier of the owner the task must belong to.</param>
     /// <param name="ct">Token used to cancel the operation.</param>
-    Task DeleteAsync(Guid id, Guid ownerId, CancellationToken ct);
+    Task DeleteAsync(Guid taskId, Guid ownerId, CancellationToken ct);
 }

@@ -31,7 +31,7 @@ public sealed class TasksController(
             new CreateTaskCommand(request.Title, request.Description, request.DueDate), ct);
 
         var response = TaskResponse.From(result);
-        return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
+        return CreatedAtAction(nameof(GetById), new { id = response.TaskId }, response);
     }
 
     [HttpGet]

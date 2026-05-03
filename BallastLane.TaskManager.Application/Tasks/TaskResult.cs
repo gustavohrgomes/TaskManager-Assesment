@@ -5,7 +5,7 @@ namespace BallastLane.TaskManager.Tasks;
 /// <summary>
 /// Read-side projection of a <see cref="TaskItem"/>.
 /// </summary>
-/// <param name="TaskItemId">Identifier of the task.</param>
+/// <param name="TaskId">Identifier of the task.</param>
 /// <param name="OwnerId">Identifier of the owning user.</param>
 /// <param name="Title">Short human-readable title.</param>
 /// <param name="Description">Optional long-form description.</param>
@@ -14,7 +14,7 @@ namespace BallastLane.TaskManager.Tasks;
 /// <param name="CreatedAt">UTC timestamp at which the task was created.</param>
 /// <param name="UpdatedAt">UTC timestamp of the most recent mutation.</param>
 public sealed record TaskResult(
-    Guid TaskItemId,
+    Guid TaskId,
     Guid OwnerId,
     string Title,
     string? Description,
@@ -29,5 +29,5 @@ public sealed record TaskResult(
     /// <param name="task">Source aggregate to project.</param>
     /// <returns>A new projection mirroring <paramref name="task"/>.</returns>
     public static TaskResult From(TaskItem task) =>
-        new(task.TaskItemId, task.OwnerId, task.Title, task.Description, task.Status, task.DueDate, task.CreatedAt, task.UpdatedAt);
+        new(task.TaskId, task.OwnerId, task.Title, task.Description, task.Status, task.DueDate, task.CreatedAt, task.UpdatedAt);
 }
