@@ -1,0 +1,64 @@
+<div class="filter-bar">
+  <mat-form-field appearance="outline" class="filter-field">
+    <mat-label>Status</mat-label>
+    <mat-select [value]="statusFilter" (selectionChange)="onStatusFilterChange($event.value)">
+      <mat-option value="">All</mat-option>
+      <mat-option value="pending">Pending</mat-option>
+      <mat-option value="inProgress">In Progress</mat-option>
+      <mat-option value="completed">Completed</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="filter-field">
+    <mat-label>Sort</mat-label>
+    <mat-select [value]="sortField" (selectionChange)="onSortChange($event.value)">
+      <mat-option value="dueDate">Due Date</mat-option>
+      <mat-option value="createdAt">Created</mat-option>
+      <mat-option value="title">Title</mat-option>
+      <mat-option value="status">Status</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-icon-button (click)="toggleSortOrder()" aria-label="Toggle sort order">
+    <mat-icon>{{ sortOrder === 'asc' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+  </button>
+  <button mat-raised-button color="accent" (click)="openCreateDialog()">+ New Task</button>
+</div>
+
+@if (loading) {
+  <div class="card-grid">
+    @for (i of [1,2,3,4,5,6]; track i) {
+      <app-skeleton-card />
+    }
+  </div>
+} @else if (isEmpty && !isFiltered) {
+  <div class="empty-state">
+    <h2>No tasks yet.</h2>
+    <p>Get started by creating your first task.</p>
+    <button mat-raised-button color="primary" (click)="openCreateDialog()">Create your first task</button>
+  </div>
+} @else if (isEmpty && isFiltered) {
+  <div class="empty-state">
+    <h2>No matching tasks.</h2>
+    <p>Try adjusting the filter.</p>
+  </div>
+} @else {
+  <div class="card-grid">
+    @for (task of tasks; track task.taskId) {
+      <app-task-card
+        [task]="task"
+        (edit)="openEditDialog($event)"
+        (delete)="openDeleteDialog($event)"
+        (statusChange)="onStatusChange($event)" />
+    }
+  </div>
+}
+
+@if (!loading && totalCount > 0) {
+  <mat-paginator
+    [length]="totalCount"
+    [pageSize]="pageSize"
+    [pageIndex]="page - 1"
+    [pageSizeOptions]="[10, 25]"
+    (page)="onPageChange($event)"
+    showFirstLastButtons>
+  </mat-paginator>
+}

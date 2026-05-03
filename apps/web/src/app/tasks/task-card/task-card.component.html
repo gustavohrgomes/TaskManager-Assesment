@@ -1,0 +1,28 @@
+<mat-card class="task-card">
+  <mat-card-header>
+    <mat-card-title class="task-title">{{ task.title }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-chip [class]="statusClass" class="status-chip">{{ statusLabel }}</mat-chip>
+    @if (task.dueDate) {
+      <span class="due-date">{{ task.dueDate | date:'MMM d, yyyy' }}</span>
+    }
+    @if (task.description) {
+      <p class="description">{{ task.description }}</p>
+    }
+  </mat-card-content>
+  <mat-card-actions align="end">
+    @if (canStart) {
+      <button mat-stroked-button (click)="onStart()">Start</button>
+    }
+    @if (canComplete) {
+      <button mat-stroked-button (click)="onComplete()">Complete</button>
+    }
+    <button mat-icon-button (click)="onEdit()" aria-label="Edit task">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button (click)="onDelete()" aria-label="Delete task">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </mat-card-actions>
+</mat-card>

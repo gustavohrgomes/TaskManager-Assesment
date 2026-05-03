@@ -1,0 +1,42 @@
+.skeleton-card {
+  padding: 16px;
+  height: 200px;
+}
+
+.skeleton-line {
+  background: linear-gradient(90deg, #e0e0e0 25%, #f5f5f5 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.skeleton-line.title {
+  height: 20px;
+  width: 70%;
+}
+
+.skeleton-line.chip {
+  height: 24px;
+  width: 80px;
+  border-radius: 12px;
+}
+
+.skeleton-line.date {
+  height: 12px;
+  width: 100px;
+}
+
+.skeleton-line.desc {
+  height: 14px;
+  width: 100%;
+}
+
+.skeleton-line.short {
+  width: 60%;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

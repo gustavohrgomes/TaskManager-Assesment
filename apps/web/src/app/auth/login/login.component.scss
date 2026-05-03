@@ -1,0 +1,51 @@
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.auth-card {
+  max-width: 400px;
+  width: 100%;
+  padding: 32px;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.auth-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  color: #009688;
+}
+
+.auth-title {
+  font-size: 28px;
+  font-weight: 400;
+  margin: 8px 0 0;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.submit-btn {
+  margin-top: 16px;
+  height: 44px;
+}
+
+.server-error {
+  color: #F44336;
+  font-size: 14px;
+  margin: 8px 0;
+}
+
+.switch-link {
+  display: block;
+  text-align: center;
+  margin-top: 16px;
+}

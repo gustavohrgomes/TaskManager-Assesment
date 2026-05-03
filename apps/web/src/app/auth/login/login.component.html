@@ -1,0 +1,38 @@
+<div class="auth-container">
+  <mat-card class="auth-card">
+    <div class="auth-header">
+      <mat-icon class="auth-icon">check_circle</mat-icon>
+      <h1 class="auth-title">Task Manager</h1>
+    </div>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email" autocomplete="email">
+        @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
+          <mat-error>Email is required</mat-error>
+        }
+        @if (form.get('email')?.hasError('email') && form.get('email')?.touched) {
+          <mat-error>Enter a valid email</mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput formControlName="password" type="password" autocomplete="current-password">
+        @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
+          <mat-error>Password is required</mat-error>
+        }
+      </mat-form-field>
+      @if (serverError) {
+        <p class="server-error">{{ serverError }}</p>
+      }
+      <button mat-raised-button color="primary" type="submit" class="full-width submit-btn" [disabled]="submitting">
+        @if (submitting) {
+          <mat-spinner diameter="20"></mat-spinner>
+        } @else {
+          Login
+        }
+      </button>
+    </form>
+    <a mat-button routerLink="/register" class="switch-link">Don't have an account? Register</a>
+  </mat-card>
+</div>
