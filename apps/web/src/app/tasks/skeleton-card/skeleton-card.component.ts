@@ -13,6 +13,6 @@ import { MatCardModule } from '@angular/material/card';
       <div class="skeleton-line desc short"></div>
     </mat-card>
   `,
-  styleUrl: './skeleton-card.component.scss'
+  styleUrl: './skeleton-card.component.scss',
 })
 export class SkeletonCardComponent {}

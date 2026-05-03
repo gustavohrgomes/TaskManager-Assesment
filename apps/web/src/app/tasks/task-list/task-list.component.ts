@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,11 +15,25 @@ import { DeleteDialogComponent, DeleteDialogData } from '../delete-dialog/delete
 
 @Component({
   selector: 'app-task-list',
-  imports: [MatSelectModule, MatButtonModule, MatIconModule, MatPaginatorModule, MatDialogModule, MatSnackBarModule, MatFormFieldModule, TaskCardComponent, SkeletonCardComponent],
+  imports: [
+    MatSelectModule,
+    MatButtonModule,
+    MatIconModule,
+    MatPaginatorModule,
+    MatDialogModule,
+    MatSnackBarModule,
+    MatFormFieldModule,
+    TaskCardComponent,
+    SkeletonCardComponent,
+  ],
   templateUrl: './task-list.component.html',
-  styleUrl: './task-list.component.scss'
+  styleUrl: './task-list.component.scss',
 })
 export class TaskListComponent implements OnInit {
+  private readonly taskService = inject(TaskService);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
+
   tasks: TaskResponse[] = [];
   totalCount = 0;
   loading = true;
@@ -28,12 +42,6 @@ export class TaskListComponent implements OnInit {
   statusFilter: TaskStatus | '' = '';
   sortField: 'createdAt' | 'dueDate' | 'title' | 'status' = 'createdAt';
   sortOrder: 'asc' | 'desc' = 'desc';
-
-  constructor(
-    private taskService: TaskService,
-    private dialog: MatDialog,
-    private snackBar: MatSnackBar
-  ) {}
 
   ngOnInit(): void {
     this.loadTasks();
@@ -45,7 +53,7 @@ export class TaskListComponent implements OnInit {
       page: this.page,
       pageSize: this.pageSize,
       sort: this.sortField,
-      order: this.sortOrder
+      order: this.sortOrder,
     };
     if (this.statusFilter) {
       params.status = this.statusFilter;
@@ -58,7 +66,7 @@ export class TaskListComponent implements OnInit {
       },
       error: () => {
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -88,20 +96,22 @@ export class TaskListComponent implements OnInit {
   openCreateDialog(): void {
     const dialogRef = this.dialog.open(TaskDialogComponent, {
       width: '480px',
-      data: {} as TaskDialogData
+      data: {} as TaskDialogData,
     });
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.taskService.create({
-          title: result.title,
-          description: result.description,
-          dueDate: result.dueDate
-        }).subscribe({
-          next: () => {
-            this.snackBar.open('Task created', '', { duration: 3000 });
-            this.loadTasks();
-          }
-        });
+        this.taskService
+          .create({
+            title: result.title,
+            description: result.description,
+            dueDate: result.dueDate,
+          })
+          .subscribe({
+            next: () => {
+              this.snackBar.open('Task created', '', { duration: 3000 });
+              this.loadTasks();
+            },
+          });
       }
     });
   }
@@ -109,21 +119,23 @@ export class TaskListComponent implements OnInit {
   openEditDialog(task: TaskResponse): void {
     const dialogRef = this.dialog.open(TaskDialogComponent, {
       width: '480px',
-      data: { task } as TaskDialogData
+      data: { task } as TaskDialogData,
     });
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.taskService.update(task.taskId, {
-          title: result.title,
-          description: result.description,
-          dueDate: result.dueDate,
-          status: result.status
-        }).subscribe({
-          next: () => {
-            this.snackBar.open('Task updated', '', { duration: 3000 });
-            this.loadTasks();
-          }
-        });
+        this.taskService
+          .update(task.taskId, {
+            title: result.title,
+            description: result.description,
+            dueDate: result.dueDate,
+            status: result.status,
+          })
+          .subscribe({
+            next: () => {
+              this.snackBar.open('Task updated', '', { duration: 3000 });
+              this.loadTasks();
+            },
+          });
       }
     });
   }
@@ -131,32 +143,34 @@ export class TaskListComponent implements OnInit {
   openDeleteDialog(task: TaskResponse): void {
     const dialogRef = this.dialog.open(DeleteDialogComponent, {
       width: '320px',
-      data: { title: task.title } as DeleteDialogData
+      data: { title: task.title } as DeleteDialogData,
     });
-    dialogRef.afterClosed().subscribe(confirmed => {
+    dialogRef.afterClosed().subscribe((confirmed) => {
       if (confirmed) {
         this.taskService.delete(task.taskId).subscribe({
           next: () => {
             this.snackBar.open('Task deleted', '', { duration: 3000 });
             this.loadTasks();
-          }
+          },
         });
       }
     });
   }
 
   onStatusChange(event: { task: TaskResponse; newStatus: TaskStatus }): void {
-    this.taskService.update(event.task.taskId, {
-      title: event.task.title,
-      description: event.task.description || undefined,
-      dueDate: event.task.dueDate || undefined,
-      status: event.newStatus
-    }).subscribe({
-      next: () => {
-        this.snackBar.open('Task updated', '', { duration: 3000 });
-        this.loadTasks();
-      }
-    });
+    this.taskService
+      .update(event.task.taskId, {
+        title: event.task.title,
+        description: event.task.description || undefined,
+        dueDate: event.task.dueDate || undefined,
+        status: event.newStatus,
+      })
+      .subscribe({
+        next: () => {
+          this.snackBar.open('Task updated', '', { duration: 3000 });
+          this.loadTasks();
+        },
+      });
   }
 
   get isEmpty(): boolean {

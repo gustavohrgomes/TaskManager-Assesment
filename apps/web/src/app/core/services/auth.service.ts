@@ -1,37 +1,47 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap, switchMap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
-import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '../models/auth.model';
+import {
+  LoginRequest,
+  LoginResponse,
+  RegisterRequest,
+  RegisterResponse,
+} from '../models/auth.model';
 import { environment } from '../../../environments/environment';
 
 const TOKEN_KEY = 'auth_token';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private readonly http = inject(HttpClient);
+  private readonly router = inject(Router);
+
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(this.hasValidToken());
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
-  constructor(private http: HttpClient, private router: Router) {}
-
   login(request: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${environment.apiBaseUrl}/auth/login`, request).pipe(
-      tap(response => {
+      tap((response) => {
         localStorage.setItem(TOKEN_KEY, response.token);
         this.isAuthenticatedSubject.next(true);
-      })
+      }),
     );
   }
 
   register(request: RegisterRequest): Observable<LoginResponse> {
-    return this.http.post<RegisterResponse>(`${environment.apiBaseUrl}/auth/register`, request).pipe(
-      switchMap(() => this.http.post<LoginResponse>(`${environment.apiBaseUrl}/auth/login`, request)),
-      tap(response => {
-        localStorage.setItem(TOKEN_KEY, response.token);
-        this.isAuthenticatedSubject.next(true);
-      })
-    );
+    return this.http
+      .post<RegisterResponse>(`${environment.apiBaseUrl}/auth/register`, request)
+      .pipe(
+        switchMap(() =>
+          this.http.post<LoginResponse>(`${environment.apiBaseUrl}/auth/login`, request),
+        ),
+        tap((response) => {
+          localStorage.setItem(TOKEN_KEY, response.token);
+          this.isAuthenticatedSubject.next(true);
+        }),
+      );
   }
 
   logout(): void {

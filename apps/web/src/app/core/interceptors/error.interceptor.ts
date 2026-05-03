@@ -6,12 +6,12 @@ import { catchError, throwError } from 'rxjs';
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   return next(req).pipe(
-    catchError(error => {
+    catchError((error) => {
       if (error.status === 401) {
         localStorage.removeItem('auth_token');
         router.navigate(['/login']);
       }
       return throwError(() => error);
-    })
+    }),
   );
 };

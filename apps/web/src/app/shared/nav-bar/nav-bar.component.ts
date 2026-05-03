@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,10 +8,10 @@ import { AuthService } from '../../core/services/auth.service';
   selector: 'app-nav-bar',
   imports: [MatToolbarModule, MatButtonModule, MatIconModule],
   templateUrl: './nav-bar.component.html',
-  styleUrl: './nav-bar.component.scss'
+  styleUrl: './nav-bar.component.scss',
 })
 export class NavBarComponent {
-  constructor(public authService: AuthService) {}
+  readonly authService = inject(AuthService);
 
   get userEmail(): string | null {
     return this.authService.getUserEmail();

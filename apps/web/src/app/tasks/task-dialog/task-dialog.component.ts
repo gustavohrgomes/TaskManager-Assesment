@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -21,29 +21,39 @@ interface StatusOption {
 
 @Component({
   selector: 'app-task-dialog',
-  imports: [ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatProgressSpinnerModule],
+  imports: [
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './task-dialog.component.html',
-  styleUrl: './task-dialog.component.scss'
+  styleUrl: './task-dialog.component.scss',
 })
 export class TaskDialogComponent {
+  private readonly fb = inject(FormBuilder);
+  readonly dialogRef = inject<MatDialogRef<TaskDialogComponent>>(MatDialogRef);
+  readonly data = inject<TaskDialogData>(MAT_DIALOG_DATA);
+
   form: FormGroup;
   isEdit: boolean;
   submitting = false;
   statusOptions: StatusOption[] = [];
 
-  constructor(
-    private fb: FormBuilder,
-    public dialogRef: MatDialogRef<TaskDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: TaskDialogData
-  ) {
-    this.isEdit = !!data.task;
-    this.statusOptions = this.getValidStatuses(data.task?.status);
+  constructor() {
+    this.isEdit = !!this.data.task;
+    this.statusOptions = this.getValidStatuses(this.data.task?.status);
 
     this.form = this.fb.group({
-      title: [data.task?.title || '', [Validators.required, Validators.maxLength(200)]],
-      description: [data.task?.description || ''],
-      dueDate: [data.task?.dueDate ? new Date(data.task.dueDate) : null],
-      status: [data.task?.status || 'pending']
+      title: [this.data.task?.title || '', [Validators.required, Validators.maxLength(200)]],
+      description: [this.data.task?.description || ''],
+      dueDate: [this.data.task?.dueDate ? new Date(this.data.task.dueDate) : null],
+      status: [this.data.task?.status || 'pending'],
     });
   }
 
@@ -66,7 +76,7 @@ export class TaskDialogComponent {
       title: value.title,
       description: value.description || undefined,
       dueDate: value.dueDate ? new Date(value.dueDate).toISOString() : undefined,
-      status: value.status
+      status: value.status,
     };
     this.dialogRef.close(result);
   }
@@ -74,17 +84,18 @@ export class TaskDialogComponent {
   private getValidStatuses(current?: TaskStatus): StatusOption[] {
     if (!current) return [];
     switch (current) {
-      case 'pending': return [
-        { value: 'pending', label: 'Pending' },
-        { value: 'inProgress', label: 'In Progress' }
-      ];
-      case 'inProgress': return [
-        { value: 'inProgress', label: 'In Progress' },
-        { value: 'completed', label: 'Completed' }
-      ];
-      case 'completed': return [
-        { value: 'completed', label: 'Completed' }
-      ];
+      case 'pending':
+        return [
+          { value: 'pending', label: 'Pending' },
+          { value: 'inProgress', label: 'In Progress' },
+        ];
+      case 'inProgress':
+        return [
+          { value: 'inProgress', label: 'In Progress' },
+          { value: 'completed', label: 'Completed' },
+        ];
+      case 'completed':
+        return [{ value: 'completed', label: 'Completed' }];
     }
   }
 }

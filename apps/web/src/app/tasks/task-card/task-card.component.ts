@@ -10,7 +10,7 @@ import { TaskResponse, TaskStatus } from '../../core/models/task.model';
   selector: 'app-task-card',
   imports: [DatePipe, MatCardModule, MatChipsModule, MatButtonModule, MatIconModule],
   templateUrl: './task-card.component.html',
-  styleUrl: './task-card.component.scss'
+  styleUrl: './task-card.component.scss',
 })
 export class TaskCardComponent {
   @Input({ required: true }) task!: TaskResponse;
@@ -24,9 +24,12 @@ export class TaskCardComponent {
 
   get statusLabel(): string {
     switch (this.task.status) {
-      case 'pending': return 'Pending';
-      case 'inProgress': return 'In Progress';
-      case 'completed': return 'Completed';
+      case 'pending':
+        return 'Pending';
+      case 'inProgress':
+        return 'In Progress';
+      case 'completed':
+        return 'Completed';
     }
   }
 

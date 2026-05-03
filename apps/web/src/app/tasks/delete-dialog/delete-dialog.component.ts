@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -16,11 +16,9 @@ export interface DeleteDialogData {
       <button mat-button mat-dialog-close>Cancel</button>
       <button mat-raised-button color="warn" [mat-dialog-close]="true">Delete</button>
     </mat-dialog-actions>
-  `
+  `,
 })
 export class DeleteDialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<DeleteDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DeleteDialogData
-  ) {}
+  readonly dialogRef = inject<MatDialogRef<DeleteDialogComponent>>(MatDialogRef);
+  readonly data = inject<DeleteDialogData>(MAT_DIALOG_DATA);
 }
