@@ -12,8 +12,7 @@ public static class InfrastructureDependencyInjection
     {
         builder.AddNpgsqlDataSource("taskmanager");
 
-        builder.Services.AddSingleton<IDbContext, NpgsqlDbContext>();
-
+        builder.Services.AddScoped<IDbContext, NpgsqlDbContext>();
         builder.Services.AddScoped<IUserRepository, NpgsqlUserRepository>();
         builder.Services.AddScoped<ITaskRepository, NpgsqlTaskRepository>();
 

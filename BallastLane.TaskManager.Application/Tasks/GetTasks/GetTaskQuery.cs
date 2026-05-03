@@ -1,4 +1,4 @@
-namespace BallastLane.TaskManager.Tasks;
+namespace BallastLane.TaskManager.Tasks.GetTasks;
 
 /// <summary>
 /// Input for fetching a single task by its identifier.

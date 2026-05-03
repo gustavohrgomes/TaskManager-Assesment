@@ -1,6 +1,6 @@
 using BallastLane.TaskManager.Tasks;
 
-namespace BallastLane.TaskManager.API.Models;
+namespace BallastLane.TaskManager.Models;
 
 public sealed record TaskResponse(
     Guid TaskId,

@@ -1,4 +1,4 @@
-namespace BallastLane.TaskManager.Auth;
+namespace BallastLane.TaskManager.Auth.Register;
 
 /// <summary>
 /// Output of a successful registration: the new user's identifier and normalized email.

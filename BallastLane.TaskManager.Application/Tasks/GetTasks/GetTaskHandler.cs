@@ -1,7 +1,7 @@
 using BallastLane.TaskManager.Abstractions;
 using BallastLane.TaskManager.Exceptions;
 
-namespace BallastLane.TaskManager.Tasks;
+namespace BallastLane.TaskManager.Tasks.GetTasks;
 
 /// <summary>
 /// Application-layer handler that fetches a single task by id, scoped to the current user so that
@@ -26,10 +26,12 @@ public sealed class GetTaskHandler
     /// <returns>The task projection if found and owned by the caller.</returns>
     public async Task<TaskResult> Handle(GetTaskQuery query, CancellationToken ct)
     {
-        var task = await _tasks.GetByIdAsync(query.TaskId, _userContext.UserId, ct);
-        if (task is null)
-            throw new TaskNotOwnedByUserException(query.TaskId, _userContext.UserId);
+        ArgumentNullException.ThrowIfNull(query, nameof(query));
 
-        return TaskResult.From(task);
+        var task = await _tasks.GetByIdAsync(query.TaskId, _userContext.UserId, ct);
+
+        return task is null 
+            ? throw new TaskNotOwnedByUserException(query.TaskId, _userContext.UserId) 
+            : TaskResult.From(task);
     }
 }

@@ -1,4 +1,4 @@
-namespace BallastLane.TaskManager.Tasks;
+namespace BallastLane.TaskManager.Tasks.CreateTask;
 
 /// <summary>
 /// Input for creating a new task on behalf of the current user.

@@ -1,11 +1,8 @@
 using System.Text;
 using BallastLane.TaskManager;
 using BallastLane.TaskManager.Abstractions;
-using BallastLane.TaskManager.API.Auth;
-using BallastLane.TaskManager.API.Middleware;
-using BallastLane.TaskManager.API.Models;
-using BallastLane.TaskManager.API.Validators;
 using BallastLane.TaskManager.Auth;
+using BallastLane.TaskManager.Middleware;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -60,10 +57,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
 
-builder.Services.AddSingleton<IValidator<CreateTaskRequest>>(sp => new CreateTaskRequestValidator(sp.GetRequiredService<TimeProvider>()));
-builder.Services.AddSingleton<IValidator<UpdateTaskRequest>>(sp => new UpdateTaskRequestValidator(sp.GetRequiredService<TimeProvider>()));
-builder.Services.AddSingleton<IValidator<LoginRequest>, LoginRequestValidator>();
-builder.Services.AddSingleton<IValidator<RegisterRequest>, RegisterRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<IApiMarker>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(

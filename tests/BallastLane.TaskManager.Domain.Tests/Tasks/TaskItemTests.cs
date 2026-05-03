@@ -41,23 +41,4 @@ public class TaskItemTests
         Should.Throw<DomainValidationException>(() =>
             TaskItem.Create(Guid.NewGuid(), title: longTitle, description: null, dueDate: null, now: DateTimeOffset.UtcNow));
     }
-
-    [Fact]
-    public void AssertOwnedBy_WithDifferentUser_Throws()
-    {
-        var ownerId = Guid.NewGuid();
-        var task = TaskItem.Create(ownerId, title: "test", description: null, dueDate: null, now: DateTimeOffset.UtcNow);
-
-        var ex = Should.Throw<TaskNotOwnedByUserException>(() => task.AssertOwnedBy(Guid.NewGuid()));
-        ex.UserId.ShouldNotBe(ownerId);
-    }
-
-    [Fact]
-    public void AssertOwnedBy_WithCorrectUser_DoesNotThrow()
-    {
-        var ownerId = Guid.NewGuid();
-        var task = TaskItem.Create(ownerId, title: "test", description: null, dueDate: null, now: DateTimeOffset.UtcNow);
-
-        Should.NotThrow(() => task.AssertOwnedBy(ownerId));
-    }
 }

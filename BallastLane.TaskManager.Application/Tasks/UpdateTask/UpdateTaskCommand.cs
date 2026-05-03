@@ -1,4 +1,4 @@
-namespace BallastLane.TaskManager.Tasks;
+namespace BallastLane.TaskManager.Tasks.UpdateTask;
 
 /// <summary>
 /// Input for updating an existing task. All fields except <paramref name="TaskId"/> overwrite the

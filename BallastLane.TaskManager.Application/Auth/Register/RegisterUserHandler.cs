@@ -3,7 +3,7 @@ using BallastLane.TaskManager.Exceptions;
 using BallastLane.TaskManager.Users;
 using FluentValidation;
 
-namespace BallastLane.TaskManager.Auth;
+namespace BallastLane.TaskManager.Auth.Register;
 
 /// <summary>
 /// Application-layer handler for new-user registration: validates the command, hashes the password,
@@ -36,6 +36,8 @@ public sealed class RegisterUserHandler
     /// <returns>The new user's identifier and email.</returns>
     public async Task<RegisterUserResult> Handle(RegisterUserCommand command, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(command, nameof(command));
+
         var validation = _validator.Validate(command);
         if (!validation.IsValid)
         {

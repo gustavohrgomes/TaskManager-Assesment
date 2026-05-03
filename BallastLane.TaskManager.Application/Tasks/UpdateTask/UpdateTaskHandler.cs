@@ -4,7 +4,7 @@ using FluentValidation;
 
 using DomainTaskStatus = BallastLane.TaskManager.Tasks.TaskStatus;
 
-namespace BallastLane.TaskManager.Tasks;
+namespace BallastLane.TaskManager.Tasks.UpdateTask;
 
 /// <summary>
 /// Application-layer handler that validates an <see cref="UpdateTaskCommand"/>, applies the changes
@@ -37,6 +37,8 @@ public sealed class UpdateTaskHandler
     /// <returns>A projection of the updated task.</returns>
     public async Task<TaskResult> Handle(UpdateTaskCommand command, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(command, nameof(command));
+
         var validation = _validator.Validate(command);
         if (!validation.IsValid)
         {
@@ -46,10 +48,9 @@ public sealed class UpdateTaskHandler
             throw new DomainValidationException(errors);
         }
 
-        var task = await _tasks.GetByIdAsync(command.TaskId, _userContext.UserId, ct);
-        if (task is null)
-            throw new TaskNotOwnedByUserException(command.TaskId, _userContext.UserId);
-
+        var task = await _tasks.GetByIdAsync(command.TaskId, _userContext.UserId, ct) 
+            ?? throw new TaskNotOwnedByUserException(command.TaskId, _userContext.UserId);
+        
         var now = _timeProvider.GetUtcNow();
         task.UpdateDetails(command.Title, command.Description, command.DueDate, now);
 

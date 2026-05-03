@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace BallastLane.TaskManager.Auth;
+namespace BallastLane.TaskManager.Auth.Login;
 
 /// <summary>
 /// FluentValidation rules for <see cref="LoginCommand"/>: both the email and password fields must be supplied.

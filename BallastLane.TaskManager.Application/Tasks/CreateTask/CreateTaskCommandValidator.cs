@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace BallastLane.TaskManager.Tasks;
+namespace BallastLane.TaskManager.Tasks.CreateTask;
 
 /// <summary>
 /// FluentValidation rules for <see cref="CreateTaskCommand"/>: enforces required title, length limits,

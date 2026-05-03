@@ -1,14 +1,17 @@
-using BallastLane.TaskManager.API.Models;
 using BallastLane.TaskManager.Common;
 using BallastLane.TaskManager.Exceptions;
-using BallastLane.TaskManager.Tasks;
+using BallastLane.TaskManager.Models;
+using BallastLane.TaskManager.Tasks.CreateTask;
+using BallastLane.TaskManager.Tasks.DeleteTask;
+using BallastLane.TaskManager.Tasks.GetTasks;
+using BallastLane.TaskManager.Tasks.UpdateTask;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using DomainTaskStatus = BallastLane.TaskManager.Tasks.TaskStatus;
 
-namespace BallastLane.TaskManager.API.Controllers;
+namespace BallastLane.TaskManager.Controllers;
 
 [ApiController]
 [Route("tasks")]
@@ -16,19 +19,17 @@ namespace BallastLane.TaskManager.API.Controllers;
 public sealed class TasksController(
     CreateTaskHandler createHandler,
     GetTaskHandler getHandler,
-    ListTasksHandler listHandler,
+    GetTasksHandler listHandler,
     UpdateTaskHandler updateHandler,
-    DeleteTaskHandler deleteHandler,
-    IValidator<CreateTaskRequest> createValidator,
-    IValidator<UpdateTaskRequest> updateValidator) : ControllerBase
+    DeleteTaskHandler deleteHandler) : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> Create(CreateTaskRequest request, CancellationToken ct)
+    public async Task<IActionResult> Create(CreateTaskRequest request, [FromServices] IValidator<CreateTaskRequest> createValidator, CancellationToken cancellationToken)
     {
         ValidateRequest(createValidator, request);
 
         var result = await createHandler.Handle(
-            new CreateTaskCommand(request.Title, request.Description, request.DueDate), ct);
+            new CreateTaskCommand(request.Title, request.Description, request.DueDate), cancellationToken);
 
         var response = TaskResponse.From(result);
         return CreatedAtAction(nameof(GetById), new { id = response.TaskId }, response);
@@ -42,7 +43,7 @@ public sealed class TasksController(
         [FromQuery] DateTimeOffset? dueBefore = null,
         [FromQuery] string? sort = null,
         [FromQuery] string? order = null,
-        CancellationToken ct = default)
+        CancellationToken cancellationToken = default)
     {
         pageSize = Math.Clamp(pageSize, 1, 100);
         page = Math.Max(page, 1);
@@ -52,10 +53,10 @@ public sealed class TasksController(
         var parsedOrder = ParseSortOrder(order);
 
         var query = new TaskListQuery(Guid.Empty, page, pageSize, parsedStatus, dueBefore, parsedSort, parsedOrder);
-        var result = await listHandler.Handle(query, ct);
+        var result = await listHandler.Handle(query, cancellationToken);
 
         var response = new TaskListResponse(
-            result.Items.Select(TaskResponse.From).ToList(),
+            [.. result.Items.Select(TaskResponse.From)],
             result.TotalCount,
             result.Page,
             result.PageSize);
@@ -71,13 +72,13 @@ public sealed class TasksController(
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> Update(Guid id, UpdateTaskRequest request, CancellationToken ct)
+    public async Task<IActionResult> Update(Guid id, UpdateTaskRequest request, [FromServices] IValidator<UpdateTaskRequest> updateValidator, CancellationToken cancellationToken)
     {
         ValidateRequest(updateValidator, request);
 
         var parsedStatus = ParseStatusRequired(request.Status);
         var result = await updateHandler.Handle(
-            new UpdateTaskCommand(id, request.Title, request.Description, request.DueDate, parsedStatus), ct);
+            new UpdateTaskCommand(id, request.Title, request.Description, request.DueDate, parsedStatus), cancellationToken);
 
         return Ok(TaskResponse.From(result));
     }
@@ -101,13 +102,10 @@ public sealed class TasksController(
         }
     }
 
-    private static DomainTaskStatus? ParseStatus(string? value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-            return null;
-
-        return ParseStatusRequired(value);
-    }
+    private static DomainTaskStatus? ParseStatus(string? value) 
+        => !string.IsNullOrWhiteSpace(value) 
+        ? ParseStatusRequired(value)
+        : null;
 
     private static DomainTaskStatus ParseStatusRequired(string value) => value.ToLowerInvariant() switch
     {

@@ -104,17 +104,6 @@ public sealed class TaskItem
     }
 
     /// <summary>
-    /// Enforces the per-user ownership invariant by throwing if the supplied caller does not own this task.
-    /// Callers should invoke this immediately after loading a task and before any read or mutation.
-    /// </summary>
-    /// <param name="userId">Identifier of the caller attempting to access the task.</param>
-    public void AssertOwnedBy(Guid userId)
-    {
-        if (OwnerId != userId)
-            throw new TaskNotOwnedByUserException(TaskId, userId);
-    }
-
-    /// <summary>
     /// Replaces the mutable details (title, description, due date) of the task and stamps a new <see cref="UpdatedAt"/>.
     /// </summary>
     /// <param name="title">New required short title; same rules as <see cref="Create"/>.</param>

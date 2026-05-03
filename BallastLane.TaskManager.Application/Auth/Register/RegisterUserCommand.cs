@@ -1,4 +1,4 @@
-namespace BallastLane.TaskManager.Auth;
+namespace BallastLane.TaskManager.Auth.Register;
 
 /// <summary>
 /// Input for the user registration flow: the email and chosen plaintext password.

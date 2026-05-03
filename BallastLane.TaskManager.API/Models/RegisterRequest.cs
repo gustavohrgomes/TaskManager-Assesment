@@ -1,3 +1,3 @@
-namespace BallastLane.TaskManager.API.Models;
+namespace BallastLane.TaskManager.Models;
 
 public sealed record RegisterRequest(string Email, string Password);

@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace BallastLane.TaskManager.Auth;
+namespace BallastLane.TaskManager.Auth.Register;
 
 /// <summary>
 /// FluentValidation rules for <see cref="RegisterUserCommand"/>: requires a syntactically valid email

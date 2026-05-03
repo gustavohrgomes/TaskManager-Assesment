@@ -1,17 +1,17 @@
 using BallastLane.TaskManager.Abstractions;
 using BallastLane.TaskManager.Common;
 
-namespace BallastLane.TaskManager.Tasks;
+namespace BallastLane.TaskManager.Tasks.GetTasks;
 
 /// <summary>
 /// Application-layer handler that returns a paged, filtered, sorted view of the current user's tasks.
 /// </summary>
-public sealed class ListTasksHandler
+public sealed class GetTasksHandler
 {
     private readonly ITaskRepository _tasks;
     private readonly IUserContext _userContext;
 
-    public ListTasksHandler(ITaskRepository tasks, IUserContext userContext)
+    public GetTasksHandler(ITaskRepository tasks, IUserContext userContext)
     {
         _tasks = tasks;
         _userContext = userContext;
@@ -25,11 +25,13 @@ public sealed class ListTasksHandler
     /// <returns>A page of task projections together with paging metadata.</returns>
     public async Task<PagedResult<TaskResult>> Handle(TaskListQuery query, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(query, nameof(query));
+
         var scoped = query with { OwnerId = _userContext.UserId };
         var result = await _tasks.ListAsync(scoped, ct);
 
         return new PagedResult<TaskResult>(
-            result.Items.Select(TaskResult.From).ToList(),
+            [.. result.Items.Select(TaskResult.From)],
             result.TotalCount,
             result.Page,
             result.PageSize);

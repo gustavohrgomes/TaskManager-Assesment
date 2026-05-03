@@ -2,7 +2,7 @@ using BallastLane.TaskManager.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BallastLane.TaskManager.API.Middleware;
+namespace BallastLane.TaskManager.Middleware;
 
 public sealed class GlobalExceptionHandler(IProblemDetailsService problemDetailsService) : IExceptionHandler
 {

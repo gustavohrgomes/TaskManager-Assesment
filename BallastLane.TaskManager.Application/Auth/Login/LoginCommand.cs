@@ -1,4 +1,4 @@
-namespace BallastLane.TaskManager.Auth;
+namespace BallastLane.TaskManager.Auth.Login;
 
 /// <summary>
 /// Input for the login flow: an email/password pair to be verified against stored credentials.

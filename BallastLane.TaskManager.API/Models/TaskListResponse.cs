@@ -1,4 +1,4 @@
-namespace BallastLane.TaskManager.API.Models;
+namespace BallastLane.TaskManager.Models;
 
 public sealed record TaskListResponse(
     IReadOnlyList<TaskResponse> Items,

@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace BallastLane.TaskManager.Tasks;
+namespace BallastLane.TaskManager.Tasks.UpdateTask;
 
 /// <summary>
 /// FluentValidation rules for <see cref="UpdateTaskCommand"/>: enforces required identifiers, title

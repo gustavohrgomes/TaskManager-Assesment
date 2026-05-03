@@ -4,7 +4,7 @@ using BallastLane.TaskManager.Exceptions;
 using BallastLane.TaskManager.Users;
 using FluentValidation;
 
-namespace BallastLane.TaskManager.Auth;
+namespace BallastLane.TaskManager.Auth.Login;
 
 /// <summary>
 /// Application-layer handler for the login flow: validates the command, looks up the user by email,
@@ -37,6 +37,8 @@ public sealed class LoginHandler
     /// <returns>The issued token together with its expiration.</returns>
     public async Task<IssuedToken> Handle(LoginCommand command, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(command, nameof(command));
+
         var validation = _validator.Validate(command);
         if (!validation.IsValid)
         {

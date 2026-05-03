@@ -1,3 +1,3 @@
-namespace BallastLane.TaskManager.API.Models;
+namespace BallastLane.TaskManager.Models;
 
 public sealed record RegisterResponse(Guid UserId, string Email);

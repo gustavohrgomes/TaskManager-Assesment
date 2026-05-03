@@ -1,7 +1,7 @@
-using BallastLane.TaskManager.API.Models;
+using BallastLane.TaskManager.Models;
 using FluentValidation;
 
-namespace BallastLane.TaskManager.API.Validators;
+namespace BallastLane.TaskManager.Validators;
 
 public sealed class CreateTaskRequestValidator : AbstractValidator<CreateTaskRequest>
 {

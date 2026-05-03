@@ -1,6 +1,6 @@
 using BallastLane.TaskManager.Abstractions;
 
-namespace BallastLane.TaskManager.Tasks;
+namespace BallastLane.TaskManager.Tasks.DeleteTask;
 
 /// <summary>
 /// Application-layer handler that deletes a task on behalf of the current user, enforcing ownership
@@ -24,6 +24,8 @@ public sealed class DeleteTaskHandler
     /// <param name="ct">Token used to cancel the operation.</param>
     public async Task Handle(DeleteTaskCommand command, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(command, nameof(command));
+
         await _tasks.DeleteAsync(command.TaskId, _userContext.UserId, ct);
     }
 }

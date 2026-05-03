@@ -1,4 +1,4 @@
-namespace BallastLane.TaskManager.Tasks;
+namespace BallastLane.TaskManager.Tasks.DeleteTask;
 
 /// <summary>
 /// Input for deleting a task owned by the current user.

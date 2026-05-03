@@ -1,5 +1,9 @@
-using BallastLane.TaskManager.Auth;
-using BallastLane.TaskManager.Tasks;
+using BallastLane.TaskManager.Auth.Login;
+using BallastLane.TaskManager.Auth.Register;
+using BallastLane.TaskManager.Tasks.CreateTask;
+using BallastLane.TaskManager.Tasks.DeleteTask;
+using BallastLane.TaskManager.Tasks.GetTasks;
+using BallastLane.TaskManager.Tasks.UpdateTask;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,18 +24,13 @@ public static class DependencyInjection
     {
         services.AddSingleton(TimeProvider.System);
 
-        services.AddSingleton<IValidator<CreateTaskCommand>>(sp =>
-            new CreateTaskCommandValidator(sp.GetRequiredService<TimeProvider>()));
-        services.AddSingleton<IValidator<UpdateTaskCommand>>(sp =>
-            new UpdateTaskCommandValidator(sp.GetRequiredService<TimeProvider>()));
-        services.AddSingleton<IValidator<RegisterUserCommand>, RegisterUserCommandValidator>();
-        services.AddSingleton<IValidator<LoginCommand>, LoginCommandValidator>();
+        services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
 
         services.AddScoped<CreateTaskHandler>();
         services.AddScoped<UpdateTaskHandler>();
         services.AddScoped<DeleteTaskHandler>();
         services.AddScoped<GetTaskHandler>();
-        services.AddScoped<ListTasksHandler>();
+        services.AddScoped<GetTasksHandler>();
         services.AddScoped<RegisterUserHandler>();
         services.AddScoped<LoginHandler>();
 

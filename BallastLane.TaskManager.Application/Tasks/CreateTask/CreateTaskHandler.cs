@@ -2,7 +2,7 @@ using BallastLane.TaskManager.Abstractions;
 using BallastLane.TaskManager.Exceptions;
 using FluentValidation;
 
-namespace BallastLane.TaskManager.Tasks;
+namespace BallastLane.TaskManager.Tasks.CreateTask;
 
 /// <summary>
 /// Application-layer handler that validates a <see cref="CreateTaskCommand"/>, builds the domain aggregate,
@@ -35,6 +35,8 @@ public sealed class CreateTaskHandler
     /// <returns>A read-side projection of the newly persisted task.</returns>
     public async Task<TaskResult> Handle(CreateTaskCommand command, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(command, nameof(command));
+
         var validation = _validator.Validate(command);
         if (!validation.IsValid)
         {

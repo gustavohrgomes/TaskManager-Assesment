@@ -1,3 +1,3 @@
-namespace BallastLane.TaskManager.API;
+namespace BallastLane.TaskManager;
 
 public interface IApiMarker;

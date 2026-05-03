@@ -1,4 +1,5 @@
 using BallastLane.TaskManager.Tasks;
+using BallastLane.TaskManager.Tasks.CreateTask;
 using NetArchTest.Rules;
 
 namespace BallastLane.TaskManager.ArchitectureTests;
@@ -43,7 +44,7 @@ public class LayerBoundaryTests
     [Fact]
     public void Controllers_should_not_depend_on_Npgsql()
     {
-        var api = typeof(BallastLane.TaskManager.API.IApiMarker).Assembly;
+        var api = typeof(IApiMarker).Assembly;
 
         var result = Types.InAssembly(api)
             .That()
@@ -64,7 +65,7 @@ public class LayerBoundaryTests
             typeof(TaskItem).Assembly,
             typeof(CreateTaskHandler).Assembly,
             typeof(AssemblyMarker).Assembly,
-            typeof(BallastLane.TaskManager.API.IApiMarker).Assembly,
+            typeof(IApiMarker).Assembly,
         };
 
         var disallowedAssemblyPrefixes = new[]
