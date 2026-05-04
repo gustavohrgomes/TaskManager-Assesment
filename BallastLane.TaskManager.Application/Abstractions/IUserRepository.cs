@@ -9,20 +9,20 @@ public interface IUserRepository
 {
     /// <summary>Inserts a new user into the underlying store.</summary>
     /// <param name="user">User aggregate to persist.</param>
-    /// <param name="ct">Token used to cancel the operation.</param>
-    Task AddAsync(User user, CancellationToken ct);
+    /// <param name="cancellationToken">Token used to cancel the operation.</param>
+    Task AddAsync(User user, CancellationToken cancellationToken);
 
     /// <summary>
     /// Looks up a user by their normalized email address, used during login and duplicate-registration checks.
     /// </summary>
     /// <param name="email">Normalized email value object to look up.</param>
-    /// <param name="ct">Token used to cancel the operation.</param>
+    /// <param name="cancellationToken">Token used to cancel the operation.</param>
     /// <returns>The matching user if found; otherwise <c>null</c>.</returns>
-    Task<User?> GetByEmailAsync(EmailAddress email, CancellationToken ct);
+    Task<User?> GetByEmailAsync(EmailAddress email, CancellationToken cancellationToken);
 
     /// <summary>Looks up a user by their identifier.</summary>
     /// <param name="id">Identifier of the user to fetch.</param>
-    /// <param name="ct">Token used to cancel the operation.</param>
+    /// <param name="cancellationToken">Token used to cancel the operation.</param>
     /// <returns>The matching user if found; otherwise <c>null</c>.</returns>
-    Task<User?> GetByIdAsync(Guid id, CancellationToken ct);
+    Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 }

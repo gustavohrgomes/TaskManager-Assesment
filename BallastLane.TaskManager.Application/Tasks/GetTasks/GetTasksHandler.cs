@@ -21,14 +21,14 @@ public sealed class GetTasksHandler
     /// Retrieves a page of the current user's tasks matching the supplied query.
     /// </summary>
     /// <param name="query">Filtering, paging, and sorting parameters.</param>
-    /// <param name="ct">Token used to cancel the operation.</param>
+    /// <param name="cancellationToken">Token used to cancel the operation.</param>
     /// <returns>A page of task projections together with paging metadata.</returns>
-    public async Task<PagedResult<TaskResult>> Handle(TaskListQuery query, CancellationToken ct)
+    public async Task<PagedResult<TaskResult>> Handle(TaskListQuery query, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(query, nameof(query));
 
         var scoped = query with { OwnerId = _userContext.UserId };
-        var result = await _tasks.ListAsync(scoped, ct);
+        var result = await _tasks.ListAsync(scoped, cancellationToken);
 
         return new PagedResult<TaskResult>(
             [.. result.Items.Select(TaskResult.From)],

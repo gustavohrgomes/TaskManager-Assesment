@@ -22,13 +22,13 @@ public sealed class GetTaskHandler
     /// Retrieves a task owned by the current user.
     /// </summary>
     /// <param name="query">Identifier of the task to retrieve.</param>
-    /// <param name="ct">Token used to cancel the operation.</param>
+    /// <param name="cancellationToken">Token used to cancel the operation.</param>
     /// <returns>The task projection if found and owned by the caller.</returns>
-    public async Task<TaskResult> Handle(GetTaskQuery query, CancellationToken ct)
+    public async Task<TaskResult> Handle(GetTaskQuery query, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(query, nameof(query));
 
-        var task = await _tasks.GetByIdAsync(query.TaskId, _userContext.UserId, ct);
+        var task = await _tasks.GetByIdAsync(query.TaskId, _userContext.UserId, cancellationToken);
 
         return task is null 
             ? throw new TaskNotOwnedByUserException(query.TaskId, _userContext.UserId) 

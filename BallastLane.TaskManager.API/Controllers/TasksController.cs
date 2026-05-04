@@ -65,9 +65,9 @@ public sealed class TasksController(
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
+    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var result = await getHandler.Handle(new GetTaskQuery(id), ct);
+        var result = await getHandler.Handle(new GetTaskQuery(id), cancellationToken);
         return Ok(TaskResponse.From(result));
     }
 
@@ -84,9 +84,9 @@ public sealed class TasksController(
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        await deleteHandler.Handle(new DeleteTaskCommand(id), ct);
+        await deleteHandler.Handle(new DeleteTaskCommand(id), cancellationToken);
         return NoContent();
     }
 

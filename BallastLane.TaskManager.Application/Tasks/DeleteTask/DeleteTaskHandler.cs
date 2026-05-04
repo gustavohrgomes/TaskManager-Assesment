@@ -21,11 +21,11 @@ public sealed class DeleteTaskHandler
     /// Deletes the task identified by the command, provided it is owned by the current user.
     /// </summary>
     /// <param name="command">Identifier of the task to delete.</param>
-    /// <param name="ct">Token used to cancel the operation.</param>
-    public async Task Handle(DeleteTaskCommand command, CancellationToken ct)
+    /// <param name="cancellationToken">Token used to cancel the operation.</param>
+    public async Task Handle(DeleteTaskCommand command, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(command, nameof(command));
 
-        await _tasks.DeleteAsync(command.TaskId, _userContext.UserId, ct);
+        await _tasks.DeleteAsync(command.TaskId, _userContext.UserId, cancellationToken);
     }
 }

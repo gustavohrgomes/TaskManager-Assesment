@@ -33,23 +33,16 @@ public sealed class LoginHandler
     /// Authenticates the supplied credentials and produces a signed JWT.
     /// </summary>
     /// <param name="command">Email/password pair submitted by the caller.</param>
-    /// <param name="ct">Token used to cancel the operation.</param>
+    /// <param name="cancellationToken">Token used to cancel the operation.</param>
     /// <returns>The issued token together with its expiration.</returns>
-    public async Task<IssuedToken> Handle(LoginCommand command, CancellationToken ct)
+    public async Task<IssuedToken> Handle(LoginCommand command, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(command, nameof(command));
 
-        var validation = _validator.Validate(command);
-        if (!validation.IsValid)
-        {
-            var errors = validation.Errors
-                .Select(f => new ValidationError(f.PropertyName, f.ErrorMessage))
-                .ToList();
-            throw new DomainValidationException(errors);
-        }
+        _validator.ValidateOrThrow(command);
 
         var email = EmailAddress.From(command.Email);
-        var user = await _users.GetByEmailAsync(email, ct);
+        var user = await _users.GetByEmailAsync(email, cancellationToken);
 
         if (user is null)
         {

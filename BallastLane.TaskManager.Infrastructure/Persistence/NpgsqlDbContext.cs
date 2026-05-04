@@ -11,8 +11,8 @@ internal sealed class NpgsqlDbContext : IDbContext
         _dataSource = dataSource;
     }
 
-    public async Task<NpgsqlConnection> CreateConnectionAsync(CancellationToken ct)
+    public async Task<NpgsqlConnection> CreateConnectionAsync(CancellationToken cancellationToken)
     {
-        return await _dataSource.OpenConnectionAsync(ct);
+        return await _dataSource.OpenConnectionAsync(cancellationToken);
     }
 }

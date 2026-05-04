@@ -1,4 +1,5 @@
 using BallastLane.TaskManager.Abstractions;
+using BallastLane.TaskManager.Common;
 using BallastLane.TaskManager.Exceptions;
 using FluentValidation;
 
@@ -33,22 +34,15 @@ public sealed class UpdateTaskHandler
     /// Updates the specified task with the supplied details.
     /// </summary>
     /// <param name="command">Task identifier together with the new field values.</param>
-    /// <param name="ct">Token used to cancel the operation.</param>
+    /// <param name="cancellationToken">Token used to cancel the operation.</param>
     /// <returns>A projection of the updated task.</returns>
-    public async Task<TaskResult> Handle(UpdateTaskCommand command, CancellationToken ct)
+    public async Task<TaskResult> Handle(UpdateTaskCommand command, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(command, nameof(command));
 
-        var validation = _validator.Validate(command);
-        if (!validation.IsValid)
-        {
-            var errors = validation.Errors
-                .Select(f => new ValidationError(f.PropertyName, f.ErrorMessage))
-                .ToList();
-            throw new DomainValidationException(errors);
-        }
+        _validator.ValidateOrThrow(command);
 
-        var task = await _tasks.GetByIdAsync(command.TaskId, _userContext.UserId, ct) 
+        var task = await _tasks.GetByIdAsync(command.TaskId, _userContext.UserId, cancellationToken) 
             ?? throw new TaskNotOwnedByUserException(command.TaskId, _userContext.UserId);
         
         var now = _timeProvider.GetUtcNow();
@@ -62,7 +56,7 @@ public sealed class UpdateTaskHandler
                 task.Complete(now);
         }
 
-        await _tasks.UpdateAsync(task, ct);
+        await _tasks.UpdateAsync(task, cancellationToken);
         return TaskResult.From(task);
     }
 }

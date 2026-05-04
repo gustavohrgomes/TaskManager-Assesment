@@ -18,9 +18,9 @@ internal sealed class NpgsqlTaskRepository : ITaskRepository
         _db = db;
     }
 
-    public async Task AddAsync(TaskItem task, CancellationToken ct)
+    public async Task AddAsync(TaskItem task, CancellationToken cancellationToken)
     {
-        await using var conn = await _db.CreateConnectionAsync(ct);
+        await using var conn = await _db.CreateConnectionAsync(cancellationToken);
         await using var cmd = new NpgsqlCommand(
             "INSERT INTO tasks (task_id, owner_id, title, description, status, due_date, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)", conn);
         cmd.Parameters.Add(new NpgsqlParameter<Guid> { TypedValue = task.TaskId });
@@ -31,24 +31,24 @@ internal sealed class NpgsqlTaskRepository : ITaskRepository
         cmd.Parameters.Add(new NpgsqlParameter { Value = task.DueDate.HasValue ? (object)task.DueDate.Value : DBNull.Value, NpgsqlDbType = NpgsqlDbType.TimestampTz });
         cmd.Parameters.Add(new NpgsqlParameter<DateTimeOffset> { TypedValue = task.CreatedAt });
         cmd.Parameters.Add(new NpgsqlParameter<DateTimeOffset> { TypedValue = task.UpdatedAt });
-        await cmd.ExecuteNonQueryAsync(ct);
+        await cmd.ExecuteNonQueryAsync(cancellationToken);
     }
 
-    public async Task<TaskItem?> GetByIdAsync(Guid taskId, Guid ownerId, CancellationToken ct)
+    public async Task<TaskItem?> GetByIdAsync(Guid taskId, Guid ownerId, CancellationToken cancellationToken)
     {
-        await using var conn = await _db.CreateConnectionAsync(ct);
+        await using var conn = await _db.CreateConnectionAsync(cancellationToken);
         await using var cmd = new NpgsqlCommand(
             "SELECT task_id, owner_id, title, description, status, due_date, created_at, updated_at FROM tasks WHERE task_id = $1 AND owner_id = $2", conn);
         cmd.Parameters.Add(new NpgsqlParameter<Guid> { TypedValue = taskId });
         cmd.Parameters.Add(new NpgsqlParameter<Guid> { TypedValue = ownerId });
-        await using var reader = await cmd.ExecuteReaderAsync(ct);
-        if (!await reader.ReadAsync(ct)) return null;
+        await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
+        if (!await reader.ReadAsync(cancellationToken)) return null;
         return ReadTask(reader);
     }
 
-    public async Task<PagedResult<TaskItem>> ListAsync(TaskListQuery query, CancellationToken ct)
+    public async Task<PagedResult<TaskItem>> ListAsync(TaskListQuery query, CancellationToken cancellationToken)
     {
-        await using var conn = await _db.CreateConnectionAsync(ct);
+        await using var conn = await _db.CreateConnectionAsync(cancellationToken);
 
         var whereClauses = new StringBuilder("WHERE owner_id = $1");
         var parameters = new List<NpgsqlParameter>
@@ -75,7 +75,7 @@ internal sealed class NpgsqlTaskRepository : ITaskRepository
         await using var countCmd = new NpgsqlCommand(countSql, conn);
         foreach (var p in parameters)
             countCmd.Parameters.Add(CloneParameter(p));
-        var totalCount = Convert.ToInt32(await countCmd.ExecuteScalarAsync(ct));
+        var totalCount = Convert.ToInt32(await countCmd.ExecuteScalarAsync(cancellationToken));
 
         var sortColumn = ToColumnName(query.Sort);
         var sortDirection = ToDirection(query.Order);
@@ -88,16 +88,16 @@ internal sealed class NpgsqlTaskRepository : ITaskRepository
         dataCmd.Parameters.Add(new NpgsqlParameter<int> { TypedValue = (query.Page - 1) * query.PageSize });
 
         var items = new List<TaskItem>();
-        await using var reader = await dataCmd.ExecuteReaderAsync(ct);
-        while (await reader.ReadAsync(ct))
+        await using var reader = await dataCmd.ExecuteReaderAsync(cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
             items.Add(ReadTask(reader));
 
         return new PagedResult<TaskItem>(items, totalCount, query.Page, query.PageSize);
     }
 
-    public async Task UpdateAsync(TaskItem task, CancellationToken ct)
+    public async Task UpdateAsync(TaskItem task, CancellationToken cancellationToken)
     {
-        await using var conn = await _db.CreateConnectionAsync(ct);
+        await using var conn = await _db.CreateConnectionAsync(cancellationToken);
         await using var cmd = new NpgsqlCommand(
             "UPDATE tasks SET title = $1, description = $2, status = $3, due_date = $4, updated_at = $5 WHERE task_id = $6 AND owner_id = $7", conn);
         cmd.Parameters.Add(new NpgsqlParameter<string> { TypedValue = task.Title });
@@ -107,17 +107,17 @@ internal sealed class NpgsqlTaskRepository : ITaskRepository
         cmd.Parameters.Add(new NpgsqlParameter<DateTimeOffset> { TypedValue = task.UpdatedAt });
         cmd.Parameters.Add(new NpgsqlParameter<Guid> { TypedValue = task.TaskId });
         cmd.Parameters.Add(new NpgsqlParameter<Guid> { TypedValue = task.OwnerId });
-        await cmd.ExecuteNonQueryAsync(ct);
+        await cmd.ExecuteNonQueryAsync(cancellationToken);
     }
 
-    public async Task DeleteAsync(Guid taskId, Guid ownerId, CancellationToken ct)
+    public async Task DeleteAsync(Guid taskId, Guid ownerId, CancellationToken cancellationToken)
     {
-        await using var conn = await _db.CreateConnectionAsync(ct);
+        await using var conn = await _db.CreateConnectionAsync(cancellationToken);
         await using var cmd = new NpgsqlCommand(
             "DELETE FROM tasks WHERE task_id = $1 AND owner_id = $2", conn);
         cmd.Parameters.Add(new NpgsqlParameter<Guid> { TypedValue = taskId });
         cmd.Parameters.Add(new NpgsqlParameter<Guid> { TypedValue = ownerId });
-        await cmd.ExecuteNonQueryAsync(ct);
+        await cmd.ExecuteNonQueryAsync(cancellationToken);
     }
 
     private static string ToColumnName(TaskSortField field) => field switch

@@ -1,5 +1,5 @@
 using BallastLane.TaskManager.Abstractions;
-using BallastLane.TaskManager.Exceptions;
+using BallastLane.TaskManager.Common;
 using FluentValidation;
 
 namespace BallastLane.TaskManager.Tasks.CreateTask;
@@ -31,20 +31,13 @@ public sealed class CreateTaskHandler
     /// Creates a new task owned by the authenticated user.
     /// </summary>
     /// <param name="command">Caller-supplied task fields.</param>
-    /// <param name="ct">Token used to cancel the operation.</param>
+    /// <param name="cancellationToken">Token used to cancel the operation.</param>
     /// <returns>A read-side projection of the newly persisted task.</returns>
-    public async Task<TaskResult> Handle(CreateTaskCommand command, CancellationToken ct)
+    public async Task<TaskResult> Handle(CreateTaskCommand command, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(command, nameof(command));
 
-        var validation = _validator.Validate(command);
-        if (!validation.IsValid)
-        {
-            var errors = validation.Errors
-                .Select(f => new ValidationError(f.PropertyName, f.ErrorMessage))
-                .ToList();
-            throw new DomainValidationException(errors);
-        }
+        _validator.ValidateOrThrow(command);
 
         var task = TaskItem.Create(
             ownerId: _userContext.UserId,
@@ -53,7 +46,7 @@ public sealed class CreateTaskHandler
             dueDate: command.DueDate,
             now: _timeProvider.GetUtcNow());
 
-        await _tasks.AddAsync(task, ct);
+        await _tasks.AddAsync(task, cancellationToken);
         return TaskResult.From(task);
     }
 }

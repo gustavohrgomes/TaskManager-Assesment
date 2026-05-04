@@ -1,4 +1,5 @@
 using BallastLane.TaskManager.Abstractions;
+using BallastLane.TaskManager.Common;
 using BallastLane.TaskManager.Exceptions;
 using BallastLane.TaskManager.Users;
 using FluentValidation;
@@ -32,29 +33,22 @@ public sealed class RegisterUserHandler
     /// Registers a new user with the supplied credentials.
     /// </summary>
     /// <param name="command">Email and plaintext password for the new account.</param>
-    /// <param name="ct">Token used to cancel the operation.</param>
+    /// <param name="cancellationToken">Token used to cancel the operation.</param>
     /// <returns>The new user's identifier and email.</returns>
-    public async Task<RegisterUserResult> Handle(RegisterUserCommand command, CancellationToken ct)
+    public async Task<RegisterUserResult> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(command, nameof(command));
 
-        var validation = _validator.Validate(command);
-        if (!validation.IsValid)
-        {
-            var errors = validation.Errors
-                .Select(f => new ValidationError(f.PropertyName, f.ErrorMessage))
-                .ToList();
-            throw new DomainValidationException(errors);
-        }
+        _validator.ValidateOrThrow(command);
 
         var email = EmailAddress.From(command.Email);
-        var existing = await _users.GetByEmailAsync(email, ct);
+        var existing = await _users.GetByEmailAsync(email, cancellationToken);
         if (existing is not null)
             throw new DomainValidationException("Email", "A user with this email already exists.");
 
         var hash = _passwordHasher.Hash(command.Password);
         var user = User.Register(email, hash, _timeProvider.GetUtcNow());
-        await _users.AddAsync(user, ct);
+        await _users.AddAsync(user, cancellationToken);
 
         return new RegisterUserResult(user.Id, user.Email.Value);
     }
