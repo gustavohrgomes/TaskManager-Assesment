@@ -17,7 +17,7 @@ As a busy professional, I need a simple way to track my tasks with statuses and 
 
 ```bash
 git clone <repo-url>
-cd Challenge
+cd TaskManager-Assesment
 dotnet run --project TaskManagement.AppHost
 ```
 
